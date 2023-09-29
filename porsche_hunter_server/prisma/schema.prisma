@@ -1,0 +1,64 @@
+// schema.prisma
+
+// $ npx prisma migrate dev --name initial
+// $ npx prisma generate
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// TODO: Configure connection to be interchangeable between dev and prod (sqlite and postgresql)
+datasource db {
+  provider = "sqlite"
+  url      = env("DEV_DATABASE_URL")
+}
+
+// application user link
+model Following {
+  id        Int      @id @default(autoincrement())
+  uuid      String   @unique
+  followerUuid String
+  followingUuid String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// application user
+model Hunter {
+  id              Int               @id @default(autoincrement())
+  uuid            String            @unique
+  firstName       String
+  lastName        String
+  hunterName      String            @unique
+  password        String
+  emailAddress    String            @unique
+  avatarUrl       String?
+  dateOfBirth     DateTime
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+}
+
+// application blog post
+model HuntResultsPost {
+  id          Int      @id @default(autoincrement())
+  uuid        String   @unique
+  authorId    String
+  title       String
+  location    String?
+  blogContent String
+  isPrivate   Boolean
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// application blog post asset. a post can have multiple assets
+model AutomobileCapture {
+  id        Int    @id @default(autoincrement())
+  uuid      String @unique
+  huntResultPostId String
+  authorId  String
+  caption   String
+  imageUrl  String 
+  model     String
+  type      String
+}
